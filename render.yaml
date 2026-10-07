@@ -44,6 +44,10 @@ services:
         source: /*
         destination: /index.html
     envVars:
-      - key: VITE_API_BASE_URL
-        # API origin + /api/v1, e.g. https://revenueradar-api.onrender.com/api/v1
-        sync: false
+      # Injected automatically by Render: your API's real public hostname
+      # (no manual URL copying needed, immune to subdomain collisions)
+      - key: VITE_API_ORIGIN
+        fromService:
+          name: revenueradar-api
+          type: web
+          envVarKey: RENDER_EXTERNAL_HOSTNAME
