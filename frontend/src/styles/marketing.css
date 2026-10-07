@@ -1,0 +1,141 @@
+/* Marketing pages (landing, pricing) + auth/onboarding shells */
+
+.marketing {
+  min-height: 100vh;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.mkt-container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+}
+
+.mkt-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border);
+  padding: 12px 0;
+}
+
+.mkt-hero {
+  padding: 84px 0 64px;
+  text-align: center;
+  background:
+    radial-gradient(1200px 320px at 50% -80px, var(--color-primary-soft), transparent 70%),
+    var(--color-surface);
+}
+
+.mkt-hero h1 {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  font-weight: 850;
+  max-width: 900px;
+  margin: 18px auto 0;
+}
+
+.mkt-sub {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  max-width: 640px;
+  margin: 18px auto 0;
+  line-height: 1.6;
+}
+
+.mkt-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  max-width: 820px;
+  margin: 52px auto 0;
+}
+
+.mkt-stats > div {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.mkt-stat-value {
+  font-size: var(--text-3xl);
+  font-weight: 820;
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+}
+
+.mkt-stat-label {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  margin-top: 6px;
+  line-height: 1.45;
+}
+
+.mkt-section {
+  padding: 72px 0;
+}
+
+.mkt-h2 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.mkt-grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.mkt-grid4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.mkt-footer {
+  border-top: 1px solid var(--color-border);
+  padding: 26px 0 40px;
+  background: var(--color-surface-2);
+}
+
+@media (max-width: 900px) {
+  .mkt-grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mkt-grid3 { grid-template-columns: minmax(0, 1fr); }
+  .mkt-stats { grid-template-columns: minmax(0, 1fr); }
+  .mkt-hero { padding: 56px 0 44px; }
+}
+
+@media (max-width: 560px) {
+  .mkt-grid4 { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Auth + onboarding shell */
+.auth-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+  background:
+    radial-gradient(900px 300px at 50% -60px, var(--color-primary-soft), transparent 70%),
+    var(--color-surface-2);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.badge-primary {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  border-color: var(--color-primary-border, var(--color-border));
+}

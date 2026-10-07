@@ -1,0 +1,16 @@
+# Local development overrides. Secrets come from environment variables.
+# Copy .env.example -> .env (git-ignored) and load it into your shell before running.
+
+app:
+  env: local
+  security:
+    jwt:
+      # Local-only default. Production MUST set JWT_SECRET via environment.
+      secret: ${JWT_SECRET:local-development-only-secret-change-me-0123456789abcdef0123456789abcdef}
+  ai:
+    provider: ${AI_PROVIDER:mock}
+
+logging:
+  level:
+    com.revenueradar: DEBUG
+    org.hibernate.SQL: DEBUG

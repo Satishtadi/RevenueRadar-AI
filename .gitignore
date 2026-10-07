@@ -1,0 +1,33 @@
+# --- OS / editor ---
+Thumbs.db
+.DS_Store
+*.swp
+.idea/
+.vscode/
+*.iml
+
+# --- env / secrets ---
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# --- Java / Maven ---
+backend/target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+hs_err_pid*
+replay_pid*
+
+# --- Node / frontend ---
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+yarn-error.log*
+
+# --- docker / local data ---
+*.log
+pgdata/

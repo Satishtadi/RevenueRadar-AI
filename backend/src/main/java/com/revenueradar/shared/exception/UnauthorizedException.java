@@ -1,0 +1,19 @@
+package com.revenueradar.shared.exception;
+
+/**
+ * Authentication required
+ */
+public class UnauthorizedException extends AppException {
+
+    public UnauthorizedException() {
+        super(ErrorCode.UNAUTHORIZED, "Authentication required");
+    }
+
+    public UnauthorizedException(String message) {
+        super(ErrorCode.UNAUTHORIZED, message);
+    }
+
+    public UnauthorizedException(String message, Throwable cause) {
+        super(ErrorCode.UNAUTHORIZED, message, cause);
+    }
+}

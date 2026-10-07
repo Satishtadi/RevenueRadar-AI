@@ -1,0 +1,40 @@
+name,mobile,email,city,source,service,status,lead_value,last_contact,remark
+Aarti Menon,9848012345,aarti.menon@gmail.com,Hyderabad,Google,Full Body Checkup,CONTACTED,3500,2026-09-28,Wants morning slots
+Ravi Teja Kondapalli,9848023456,raviteja.k@yahoo.com,Hyderabad,WhatsApp,Physiotherapy Session,QUALIFIED,4500,2026-10-01,Lower back pain - recurring
+Sneha Reddy,9848034567,sneha.reddy@outlook.com,Secunderabad,Referral,Diabetes Review,CONVERTED,1200,2026-09-20,Monthly HbA1c review
+Mohammed Irfan,9848045678,m.irfan@gmail.com,Hyderabad,JustDial,ECG,NEW,800,2026-10-03,Called once - no answer
+Kavitha Devineni,9848056789,kavitha.d@gmail.com,Begumpet,Google,Skin Allergy Test,CONTACTED,2200,2026-09-30,Patch test scheduled
+Srinivas Rao P,9848067890,srinivas.rao@gmail.com,Hyderabad,Walk-in,Follow-up Visit,LOST,600,2026-08-12,Did not return after first consult
+Priyanka Sharma,9848078901,priyanka.s@gmail.com,Kukatpally,Instagram,Ultrasound,QUALIFIED,1800,2026-10-02,Pregnancy scan - 2nd trimester
+Venkat Nallamala,9848089012,venkat.n@gmail.com,Hyderabad,Google,Full Body Checkup,LOST,3500,2026-07-25,Price objection - never followed up
+Anusha Bilaspur,9848090123,anusha.b@gmail.com,Ameerpet,Referral,Vaccination,CONVERTED,1500,2026-09-18,Flu shot - happy
+"Dr. Sharma, MD",9848091234,sharma.clinic@gmail.com,Hyderabad,Referral,Consultation,CONTACTED,1000,2026-09-29,Referred another patient
+Naveen Kumar G,9848092345,naveen.k@gmail.com,Secunderabad,Website,Physiotherapy Session,UNREACHABLE,4500,2026-06-30,Phone switched off since June
+Fatima Begum,9848093456,fatima.b@gmail.com,Old City,WhatsApp,Diabetes Review,CONTACTED,1200,2026-10-04,Wants female doctor
+Harish Chandra,9848094567,harish.c@gmail.com,Hyderabad,Google,ECG,LOST,800,2026-08-05,Went to another lab
+Lakshmi Prasanna,9848095678,lakshmi.p@gmail.com,Madhapur,JustDial,Skin Allergy Test,NEW,2200,2026-10-05,Enquiry about rate
+Sameer Khan,9848096789,sameer.k@gmail.com,Hyderabad,Instagram,Follow-up Visit,CONTACTED,600,2026-09-25,Post-op day 7 review
+Divya Sri Chalasani,9848097890,divya.s@gmail.com,Gachibowli,Google,Full Body Checkup,QUALIFIED,3500,2026-10-02,Corporate package enquiry
+Prakash Jadhav,9848098901,prakash.j@gmail.com,Hyderabad,Walk-in,Physiotherapy Session,LOST,4500,2026-07-10,Stopped after 2 sessions
+Meghana Reddy K,9848099012,meghana.r@gmail.com,Secunderabad,Referral,Ultrasound,CONVERTED,1800,2026-09-22,Completed scan
+Abdul Razak,9848099123,abdul.r@gmail.com,Charminar,WhatsApp,Diabetes Review,UNREACHABLE,1200,2026-06-15,No response to 3 follow-ups
+Swathi Vemuri,9848099234,swathi.v@gmail.com,Kondapur,Website,Vaccination,NEW,1500,2026-10-06,Asked about child vaccines
+Rahul Varma T,9848099345,rahul.v@gmail.com,Hyderabad,Google,ECG,CONTACTED,800,2026-09-27,Chest tightness - needs slot
+Shailaja Gangula,9848099456,shailaja.g@gmail.com,Begumpet,JustDial,Follow-up Visit,LOST,600,2026-08-18,Said will call back - never did
+Vikram Rathore,9848099567,vikram.r@gmail.com,Hyderabad,Instagram,Full Body Checkup,LOST,3500,2026-07-30,Delayed follow-up - went to competitor
+Nithya Raghavan,9848099678,nithya.r@gmail.com,Ameerpet,Google,Skin Allergy Test,QUALIFIED,2200,2026-10-01,Test done - awaiting results
+Ganesh Yadav,9848099789,ganesh.y@gmail.com,Secunderabad,WhatsApp,Physiotherapy Session,CONTACTED,4500,2026-09-29,Knee rehab - 12 sessions planned
+Bhavana Kumar,9848099890,bhavana.k@gmail.com,Hyderabad,Referral,Diabetes Review,CONVERTED,1200,2026-09-15,Referred by Sneha Reddy
+Imran Siddiqui,9848099901,imran.s@gmail.com,Old City,Google,Full Body Checkup,LOST,3500,2026-06-28,Never picked up after quote
+Ananya Deshpande,9848099912,ananya.d@gmail.com,Gachibowli,Website,Ultrasound,NEW,1800,2026-10-06,Online booking enquiry
+Suresh Babu N,9848099923,suresh.b@gmail.com,Hyderabad,Walk-in,ECG,CONTACTED,800,2026-09-24,Report pending with doctor
+Rekha Pasthalam,9848099934,rekha.p@gmail.com,Kukatpally,JustDial,Vaccination,LOST,1500,2026-08-01,Price too high vs pharmacy
+Karthik Iyer,9848099945,karthik.i@gmail.com,Hyderabad,Google,Follow-up Visit,QUALIFIED,600,2026-10-03,Wants evening consultation
+Sowmya Reddy B,9848099956,sowmya.r@gmail.com,Secunderabad,Instagram,Skin Allergy Test,CONTACTED,2200,2026-09-26,Acne treatment query
+Ahmed Ali,9848099967,ahmed.a@gmail.com,Charminar,WhatsApp,Diabetes Review,UNREACHABLE,1200,2026-07-05,Wrong number - invalid
+Pooja Hegde,9848099978,pooja.h@gmail.com,Hyderabad,Google,Full Body Checkup,CONTACTED,3500,2026-09-30,Annual health check - due
+Manoj Gupta,9848099989,manoj.g@gmail.com,Ameerpet,Referral,Physiotherapy Session,LOST,4500,2026-07-18,Relocated to another city
+Sravani Nallamothu,9848099990,sravani.n@gmail.com,Kondapur,Website,Consultation,NEW,1000,2026-10-06,New patient registration
+Aarti Menon,9848012345,aarti.menon@gmail.com,Hyderabad,Google,Full Body Checkup,CONTACTED,3500,2026-09-28,Duplicate row - should be detected
+,9848099999,no.name@gmail.com,Hyderabad,JustDial,Consultation,NEW,1000,2026-10-04,Missing name - should fail validation
+Ramesh "The Boss" Kumar,9848099911,ramesh.k@gmail.com,Hyderabad,Walk-in,Follow-up Visit,CONTACTED,600,2026-09-21,Quoted name with special chars
