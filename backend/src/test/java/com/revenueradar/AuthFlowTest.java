@@ -1,6 +1,7 @@
 package com.revenueradar;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revenueradar.shared.email.NoopEmailSender;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ class AuthFlowTest {
 
     @Autowired
     private ObjectMapper mapper;
+
+    @Autowired
+    private NoopEmailSender emailSender;
 
     private final HttpClient http = HttpClient.newHttpClient();
 
@@ -153,6 +157,60 @@ class AuthFlowTest {
                 "orgName", "Weak Clinic"), null);
         assertThat(weakPassword.status()).isEqualTo(400);
         assertThat(weakPassword.body().get("errorCode")).isEqualTo("VALIDATION_ERROR");
+    }
+
+    @Test
+    @DisplayName("Password reset: one-time token, old password dies, sessions revoked")
+    void forgotResetPasswordLifecycle() {
+        String email = "reset-" + UUID.randomUUID() + "@example.com";
+        Result registered = post("/api/v1/auth/register", Map.of(
+                "fullName", "Reset User",
+                "email", email,
+                "password", PASSWORD,
+                "orgName", "Reset Clinic"), null);
+        assertThat(registered.status()).isEqualTo(200);
+        String staleRefresh = (String) data(registered).get("refreshToken");
+
+        // unknown email still answers 200 (no user enumeration) and sends nothing
+        String previousUrl = emailSender.getLastResetUrl();
+        Result unknown = post("/api/v1/auth/forgot-password",
+                Map.of("email", "ghost-" + UUID.randomUUID() + "@example.com"), null);
+        assertThat(unknown.status()).isEqualTo(200);
+        assertThat(emailSender.getLastResetUrl()).isEqualTo(previousUrl);
+
+        // known email answers identically but delivers a reset link
+        Result forgot = post("/api/v1/auth/forgot-password", Map.of("email", email), null);
+        assertThat(forgot.status()).isEqualTo(200);
+        String resetUrl = emailSender.getLastResetUrl();
+        assertThat(resetUrl).contains("/reset-password?token=");
+        String token = resetUrl.substring(resetUrl.indexOf("token=") + "token=".length());
+
+        // garbage token rejected
+        Result garbage = post("/api/v1/auth/reset-password",
+                Map.of("token", "bogus-token", "newPassword", "NewPass123!"), null);
+        assertThat(garbage.status()).isEqualTo(401);
+
+        // valid token sets the new password
+        Result reset = post("/api/v1/auth/reset-password",
+                Map.of("token", token, "newPassword", "NewPass123!"), null);
+        assertThat(reset.status()).isEqualTo(200);
+
+        // old password is dead, new one works
+        Result oldLogin = post("/api/v1/auth/login",
+                Map.of("email", email, "password", PASSWORD), null);
+        assertThat(oldLogin.status()).isEqualTo(401);
+        Result newLogin = post("/api/v1/auth/login",
+                Map.of("email", email, "password", "NewPass123!"), null);
+        assertThat(newLogin.status()).isEqualTo(200);
+
+        // every session from before the reset is revoked
+        Result stale = post("/api/v1/auth/refresh", Map.of("refreshToken", staleRefresh), null);
+        assertThat(stale.status()).isEqualTo(401);
+
+        // the reset token is single-use
+        Result reuse = post("/api/v1/auth/reset-password",
+                Map.of("token", token, "newPassword", "Another123!"), null);
+        assertThat(reuse.status()).isEqualTo(401);
     }
 
     // --- helpers -----------------------------------------------------------

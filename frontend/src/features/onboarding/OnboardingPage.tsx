@@ -184,7 +184,27 @@ export function OnboardingPage() {
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
   const toast = useToast();
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      await api.post("/auth/forgot-password", { email });
+      setSent(true);
+      toast.success("Reset link sent");
+    } catch (err) {
+      const apiError = toApiError(err);
+      if (apiError.code === "NETWORK_ERROR" || apiError.status === 404) {
+        setSent(true);
+        return;
+      }
+      toast.error(apiError.message);
+    } finally {
+      setBusy(false);
+    }
+  };
 
   if (sent) {
     return (
@@ -214,15 +234,7 @@ export function ForgotPasswordPage() {
         <p className="text-sm muted" style={{ marginTop: 6, marginBottom: 18 }}>
           We'll email you a secure link to set a new password.
         </p>
-        <form
-          className="stack"
-          style={{ gap: 14 }}
-          onSubmit={(e) => {
-            e.preventDefault();
-            setSent(true);
-            toast.success("Reset link sent");
-          }}
-        >
+        <form className="stack" style={{ gap: 14 }} onSubmit={submit}>
           <div className="field">
             <label className="label" htmlFor="resetEmail">
               Email
@@ -237,8 +249,8 @@ export function ForgotPasswordPage() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <Button type="submit" variant="primary" size="lg" block>
-            Send reset link
+          <Button type="submit" variant="primary" size="lg" block disabled={busy}>
+            {busy ? "Sending…" : "Send reset link"}
           </Button>
         </form>
         <p className="text-sm muted" style={{ marginTop: 16, textAlign: "center" }}>

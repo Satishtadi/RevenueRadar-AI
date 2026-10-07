@@ -54,13 +54,15 @@ Response `data`:
 | Method | Path | Auth | Notes |
 |---|---|---|---|
 | POST | `/register` | PUBLIC | `{email,password,fullName,orgName}` → creates pending org + owner; returns tokens |
-| POST | `/login` | PUBLIC | Rate limit 5/min/IP → `{accessToken, refreshToken, user, organization}` |
+| POST | `/login` | PUBLIC | → `{accessToken, refreshToken, user, organization}` |
 | POST | `/refresh` | PUBLIC | `{refreshToken}` → rotated pair (old token invalidated) |
 | POST | `/logout` | ANY_AUTH | revokes refresh token |
-| POST | `/forgot-password` | PUBLIC | always 200 (no user enumeration); writes reset token |
-| POST | `/reset-password` | PUBLIC | `{token,newPassword}` |
+| POST | `/forgot-password` | PUBLIC | always 200 (no user enumeration); writes reset token, emails `{web}/reset-password?token=…` (NoopEmailSender logs the link) |
+| POST | `/reset-password` | PUBLIC | `{token,newPassword}` → single-use token, revokes all sessions |
 | GET | `/me` | ANY_AUTH | user + roles + org summary + plan + usage |
 | POST | `/verify-email` | PUBLIC | `{token}` |
+
+Rate limit: all public `/auth/*` POSTs share 20 req/min/IP (429 `RATE_LIMITED`).
 
 `user`: `{id, fullName, email, roles[], organizationId}`
 

@@ -19,7 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Fixed-window rate limiter for the public auth endpoints (login/register/refresh).
+ * Fixed-window rate limiter for the public auth endpoints
+ * (login/register/refresh/forgot-password/reset-password).
  * In-memory per instance — appropriate for the single-instance free tier.
  * Runs inside the security chain, writes the standard error envelope directly.
  */
@@ -56,7 +57,9 @@ public class AuthRateLimitFilter extends OncePerRequestFilter {
 
     private boolean isRateLimited(HttpServletRequest request) {
         String path = request.getRequestURI();
-        if (!(path.endsWith("/auth/login") || path.endsWith("/auth/register") || path.endsWith("/auth/refresh"))) {
+        if (!(path.endsWith("/auth/login") || path.endsWith("/auth/register")
+                || path.endsWith("/auth/refresh") || path.endsWith("/auth/forgot-password")
+                || path.endsWith("/auth/reset-password"))) {
             return false;
         }
         long now = System.currentTimeMillis();

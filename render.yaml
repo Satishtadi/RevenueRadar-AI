@@ -31,6 +31,12 @@ services:
         value: production
       - key: AI_PROVIDER
         value: mock
+      # Web origin for password-reset links (auto-injected, no manual copying)
+      - key: APP_FRONTEND_BASE_URL
+        fromService:
+          name: revenueradar-web
+          type: web
+          envVarKey: RENDER_EXTERNAL_HOSTNAME
 
   # --- React frontend (static site) ---
   - type: web

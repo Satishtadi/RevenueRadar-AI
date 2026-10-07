@@ -5,17 +5,21 @@ import com.revenueradar.identity.api.AuthDtos.OrganizationView;
 import com.revenueradar.identity.api.AuthDtos.RegisterRequest;
 import com.revenueradar.identity.api.AuthDtos.SessionView;
 import com.revenueradar.identity.api.AuthDtos.UserView;
+import com.revenueradar.identity.domain.PasswordResetToken;
 import com.revenueradar.identity.domain.RefreshToken;
 import com.revenueradar.identity.domain.User;
+import com.revenueradar.identity.infra.PasswordResetTokenRepository;
 import com.revenueradar.identity.infra.RefreshTokenRepository;
 import com.revenueradar.identity.infra.UserRepository;
 import com.revenueradar.organization.domain.Organization;
 import com.revenueradar.organization.infra.OrganizationRepository;
+import com.revenueradar.shared.email.EmailSender;
 import com.revenueradar.shared.exception.EmailAlreadyExistsException;
 import com.revenueradar.shared.exception.ResourceNotFoundException;
 import com.revenueradar.shared.exception.UnauthorizedException;
 import com.revenueradar.shared.security.AuthenticatedUser;
 import com.revenueradar.shared.security.JwtService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,7 +40,7 @@ import java.util.UUID;
 
 /**
  * Phase 3 authentication: register (org + owner), login, refresh rotation with
- * reuse detection, logout and current-user lookup.
+ * reuse detection, logout, current-user lookup and password reset.
  * Refresh tokens are opaque, stored only as SHA-256 hashes, 14-day TTL.
  */
 @Service
@@ -44,23 +48,33 @@ public class AuthService {
 
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final Duration REFRESH_TTL = Duration.ofDays(14);
+    private static final Duration RESET_TTL = Duration.ofMinutes(30);
 
     private final UserRepository userRepository;
     private final OrganizationRepository organizationRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final EmailSender emailSender;
+    private final String frontendBaseUrl;
 
     public AuthService(UserRepository userRepository,
                        OrganizationRepository organizationRepository,
                        RefreshTokenRepository refreshTokenRepository,
+                       PasswordResetTokenRepository passwordResetTokenRepository,
                        PasswordEncoder passwordEncoder,
-                       JwtService jwtService) {
+                       JwtService jwtService,
+                       EmailSender emailSender,
+                       @Value("${app.frontend-base-url}") String frontendBaseUrl) {
         this.userRepository = userRepository;
         this.organizationRepository = organizationRepository;
         this.refreshTokenRepository = refreshTokenRepository;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.emailSender = emailSender;
+        this.frontendBaseUrl = frontendBaseUrl;
     }
 
     @Transactional
@@ -152,6 +166,69 @@ public class AuthService {
         User user = userRepository.findById(principal.userId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return userView(user);
+    }
+
+    /**
+     * Always completes without revealing whether the email exists (no user
+     * enumeration). Unknown/disabled accounts simply produce no email.
+     */
+    @Transactional
+    public void forgotPassword(String email) {
+        String normalized = normalizeEmail(email);
+        userRepository.findByEmail(normalized).ifPresent(user -> {
+            if (!User.STATUS_ACTIVE.equals(user.getStatus())) {
+                return;
+            }
+            passwordResetTokenRepository.deleteAllForUser(user.getId());
+
+            byte[] bytes = new byte[32];
+            RANDOM.nextBytes(bytes);
+            String raw = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+
+            PasswordResetToken token = new PasswordResetToken();
+            token.setUserId(user.getId());
+            token.setTokenHash(sha256Hex(raw));
+            token.setExpiresAt(Instant.now().plus(RESET_TTL));
+            passwordResetTokenRepository.save(token);
+
+            emailSender.sendPasswordReset(user.getEmail(), resetLink(raw));
+        });
+    }
+
+    /**
+     * Consumes the single-use token, replaces the password and signs every
+     * device out by revoking all refresh token families of the user.
+     */
+    @Transactional
+    public void resetPassword(String rawToken, String newPassword) {
+        PasswordResetToken stored = passwordResetTokenRepository
+                .findByTokenHash(sha256Hex(rawToken == null ? "" : rawToken.trim()))
+                .orElseThrow(() -> new UnauthorizedException("Invalid or expired reset token"));
+        if (stored.getUsedAt() != null || stored.getExpiresAt().isBefore(Instant.now())) {
+            throw new UnauthorizedException("Invalid or expired reset token");
+        }
+        User user = userRepository.findById(stored.getUserId())
+                .orElseThrow(() -> new UnauthorizedException("Invalid or expired reset token"));
+
+        stored.setUsedAt(Instant.now());
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        refreshTokenRepository.findByUserId(user.getId()).forEach(token -> {
+            if (token.getRevokedAt() == null) {
+                token.setRevokedAt(Instant.now());
+            }
+        });
+    }
+
+    private String resetLink(String rawToken) {
+        String base = frontendBaseUrl.endsWith("/")
+                ? frontendBaseUrl.substring(0, frontendBaseUrl.length() - 1)
+                : frontendBaseUrl;
+        if (!base.startsWith("http://") && !base.startsWith("https://")) {
+            base = "https://" + base;
+        }
+        return base + "/reset-password?token=" + rawToken;
     }
 
     private SessionView session(User user, Organization organization) {

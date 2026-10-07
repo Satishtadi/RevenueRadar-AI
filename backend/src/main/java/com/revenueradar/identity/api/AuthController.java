@@ -1,8 +1,10 @@
 package com.revenueradar.identity.api;
 
+import com.revenueradar.identity.api.AuthDtos.ForgotPasswordRequest;
 import com.revenueradar.identity.api.AuthDtos.LoginRequest;
 import com.revenueradar.identity.api.AuthDtos.RefreshRequest;
 import com.revenueradar.identity.api.AuthDtos.RegisterRequest;
+import com.revenueradar.identity.api.AuthDtos.ResetPasswordRequest;
 import com.revenueradar.identity.api.AuthDtos.SessionView;
 import com.revenueradar.identity.api.AuthDtos.UserView;
 import com.revenueradar.identity.application.AuthService;
@@ -53,6 +55,20 @@ public class AuthController {
     public ApiResponse<Void> logout(@RequestBody(required = false) RefreshRequest request) {
         authService.logout(request != null ? request.refreshToken() : null);
         return ApiResponse.message("Signed out");
+    }
+
+    @PostMapping("/forgot-password")
+    @Operation(summary = "Request a password reset link (always 200, no user enumeration)")
+    public ApiResponse<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.forgotPassword(request.email());
+        return ApiResponse.message("If an account exists for that email, a reset link has been sent");
+    }
+
+    @PostMapping("/reset-password")
+    @Operation(summary = "Set a new password with a single-use reset token")
+    public ApiResponse<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request.token(), request.newPassword());
+        return ApiResponse.message("Password updated. Please sign in with your new password.");
     }
 
     @GetMapping("/me")

@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { useAuth, hasRole } from "../features/auth/AuthContext";
 import { AppLayout } from "../layouts/AppLayout";
 import { LandingPage, PricingPage } from "../features/marketing/MarketingPages";
-import { LoginPage, RegisterPage } from "../features/auth/AuthPages";
+import { LoginPage, RegisterPage, ResetPasswordPage } from "../features/auth/AuthPages";
 import { ForgotPasswordPage, OnboardingPage } from "../features/onboarding/OnboardingPage";
 import { DashboardPage } from "../features/dashboard/DashboardPage";
 import { ActionPlanPage, RecoverySessionPage } from "../features/recovery/ActionPlanPage";
@@ -46,6 +46,7 @@ export function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
 
       <Route
         path="/onboarding"
