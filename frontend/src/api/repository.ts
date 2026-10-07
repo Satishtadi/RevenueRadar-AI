@@ -1,4 +1,4 @@
-import { api, toApiError, ApiError } from "./client";
+import { api, toApiError, ApiError, tokenStore } from "./client";
 import type {
   ActionPlanItem,
   Appointment,
@@ -30,7 +30,12 @@ async function withFallback<T>(call: () => Promise<T>, fallback: () => T): Promi
     return await call();
   } catch (error) {
     const apiError = toApiError(error);
-    if (NOT_IMPLEMENTED.has(apiError.status) || apiError.code === "NETWORK_ERROR") {
+    if (
+      NOT_IMPLEMENTED.has(apiError.status) ||
+      apiError.code === "NETWORK_ERROR" ||
+      // 401 without a token = anonymous/demo visitor on a protected endpoint
+      (apiError.status === 401 && !tokenStore.access)
+    ) {
       return fallback();
     }
     throw apiError;

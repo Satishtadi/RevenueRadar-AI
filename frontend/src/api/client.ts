@@ -66,12 +66,15 @@ api.interceptors.response.use(
     const isAuthCall = original?.url?.includes("/auth/");
     if (error.response?.status === 401 && original && !isAuthCall && !original._retry) {
       original._retry = true;
+      const hadSession = tokenStore.refresh !== null;
       const fresh = await refreshAccessToken();
       if (fresh) {
         original.headers.Authorization = `Bearer ${fresh}`;
         return api.request(original);
       }
-      if (window.location.pathname !== "/login") {
+      // Only force a re-login for real sessions; anonymous/demo requests fall
+      // through to the caller so fixture fallback keeps working.
+      if (hadSession && window.location.pathname !== "/login") {
         window.location.href = "/login";
       }
     }
